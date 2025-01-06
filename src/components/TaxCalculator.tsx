@@ -48,7 +48,7 @@ export default function TaxCalculator() {
       <div className="max-w-2xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden">
         <div className="bg-gradient-to-r from-blue-600 to-blue-700 px-8 py-6">
           <h2 className="text-2xl font-bold text-white">Tax Calculator</h2>
-          <p className="text-blue-100 mt-2">Calculate your after-tax salary with deductions</p>
+          <p className="text-blue-100 mt-2">Calculate your after-tax salary with NSSF deductions</p>
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)} className="p-3 md:p-8 space-y-6">
@@ -67,6 +67,7 @@ export default function TaxCalculator() {
               step="0.01"
               register={register('otherIncome', { valueAsNumber: true })}
               error={errors.otherIncome?.message}
+              tooltip="Any additional income you receive apart from your salary. (Ex: Bonus, OT, Commission, etc.)"
             />
           </div>
           <div className="grid grid-cols-1 gap-4">
@@ -75,6 +76,7 @@ export default function TaxCalculator() {
               type="number"
               register={register('dependants', { valueAsNumber: true })}
               error={errors.dependants?.message}
+              tooltip="Number of people who rely on your income for financial support. (Ex: Your wife and your child)"
             />
           </div>
 
@@ -125,7 +127,7 @@ export default function TaxCalculator() {
         )}
       </div>
       <p className='text-center text-xs text-gray-500 pt-10'>
-        Powered by <a href='https://t.me/samneng_bot/' target='_blank' rel='noopener noreferrer' className='text-blue-500 underline'><i>Samneng</i></a>
+        Created by <a href='https://t.me/samneng_bot/' target='_blank' rel='noopener noreferrer' className='text-blue-500 underline'><i>Samneng</i></a>
       </p>
     </div>
   );
