@@ -1,20 +1,20 @@
 interface TaxInput {
-  netSalary: number;
+  grossSalary: number;
   otherIncome: number;
   dependants: number;
   exchangeRate: number;
-  nffsRate: number;
+  nssfRate: number;
 }
 
 export function calculateTax({
-  netSalary,
+  grossSalary,
   otherIncome,
   dependants,
   exchangeRate,
-  nffsRate,
+  nssfRate,
 }: TaxInput): Array<number> {
   // Convert all amounts to the target currency
-  const totalIncomeUSD = netSalary + otherIncome;
+  const totalIncomeUSD = grossSalary + otherIncome;
   const totalIncomeKHR = Math.round(totalIncomeUSD * exchangeRate);
 
   // Basic deduction per dependant (example value)
@@ -36,23 +36,23 @@ export function calculateTax({
   }
   const salaryTaxUSD = salaryTax / exchangeRate;
 
-  // Calculate NFFS tax
-  const nffsSalary = Math.round(netSalary * nffsRate);
-  let nffsDeduction = 0;
-  if(nffsSalary <= 0){
-    nffsDeduction = 0 * 0.02;
-  }else if(nffsSalary <= 400000){
-    nffsDeduction = 400000 * 0.02;
-  }else if(nffsSalary >= 1200000){
-    nffsDeduction = 1200000 * 0.02;
-  }else if(nffsSalary < 1200000){
-    nffsDeduction = nffsSalary * 0.02;
+  // Calculate NSSF tax
+  const nssfSalary = Math.round(grossSalary * nssfRate);
+  let nssfDeduction = 0;
+  if(nssfSalary <= 0){
+    nssfDeduction = 0 * 0.02;
+  }else if(nssfSalary <= 400000){
+    nssfDeduction = 400000 * 0.02;
+  }else if(nssfSalary >= 1200000){
+    nssfDeduction = 1200000 * 0.02;
+  }else if(nssfSalary < 1200000){
+    nssfDeduction = nssfSalary * 0.02;
   }
-  const nffsDeductionUSD = nffsDeduction / nffsRate;
+  const nssfDeductionUSD = nssfDeduction / nssfRate;
 
   // Calculate Salary after Tax
-  const salaryAfterTax = totalIncomeUSD - salaryTaxUSD - nffsDeductionUSD;
+  const salaryAfterTax = totalIncomeUSD - salaryTaxUSD - nssfDeductionUSD;
 
   // Return final amount after tax
-  return [salaryTaxUSD, nffsDeductionUSD, salaryAfterTax];
+  return [salaryTaxUSD, nssfDeductionUSD, salaryAfterTax];
 }
