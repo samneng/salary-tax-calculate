@@ -12,7 +12,7 @@ export const metadata: Metadata = {
     description: "Calculate your salary after tax deductions and dependants",
     siteName: "Salary Tax Calculator",
     images: [{
-      url: "/img/tax-calculate.png",
+      url: "/img/salary-tax-calculator.png",
     }],
   }
 }

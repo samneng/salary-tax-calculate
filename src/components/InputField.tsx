@@ -1,5 +1,6 @@
 'use client';
 import { ReactNode } from 'react';
+import Tooltip from './Tooltip';
 interface InputFieldProps {
   label: string;
   type: string;
@@ -7,13 +8,15 @@ interface InputFieldProps {
   error?: string;
   step?: string;
   detail?: ReactNode;
+  tooltip?: string;
 }
 
-export default function InputField({ label, type, register, error, step, detail }: InputFieldProps) {
+export default function InputField({ label, type, register, error, step, detail, tooltip }: InputFieldProps) {
   return (
     <div>
       <label className="block text-sm font-medium text-gray-700">
         {label}
+        {tooltip && <Tooltip text={tooltip} />}
       </label>
       {detail && (
       <p className="text-sm text-gray-500">{detail}</p>
