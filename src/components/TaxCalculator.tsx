@@ -48,7 +48,11 @@ export default function TaxCalculator() {
       <div className="max-w-2xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden">
         <div className="bg-gradient-to-r from-blue-600 to-blue-700 px-8 py-6">
           <h2 className="text-2xl font-bold text-white">Tax Calculator</h2>
-          <p className="text-blue-100 mt-2">Calculate your after-tax salary with NSSF deductions</p>
+          <p className="text-white mt-2">Calculate your after-tax salary with NSSF deductions</p>
+          <p className="text-blue-100 text-xs italic">This application are following
+            <a href="https://www.tax.gov.kh/u6rhf7ogbi6/gdtstream/fb78dfde-8342-4e3c-80e0-84ef81919c70" className="hover:text-blue-300" target='_blank' rel='noopener noreferrer'> GDT PRAKAS 575</a> &
+            <a className="hover:text-blue-300" target='_blank' rel='noopener noreferrer' href="https://www.nssf.gov.kh/%e1%9e%95%e1%9f%92%e1%9e%93%e1%9f%82%e1%9e%80%e1%9e%a0%e1%9e%b6%e1%9e%93%e1%9e%b7%e1%9e%97%e1%9f%90%e1%9e%99%e1%9e%80%e1%9e%b6%e1%9e%9a%e1%9e%84%e1%9e%b6%e1%9e%9a/%e1%9e%80%e1%9e%b6%e1%9e%9a%e1%9e%94%e1%9e%84%e1%9f%8b%e1%9e%97%e1%9e%b6%e1%9e%82%e1%9e%91%e1%9e%b6%e1%9e%93/"> NSSF</a>
+          </p>
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)} className="p-3 md:p-8 space-y-6">
@@ -127,7 +131,7 @@ export default function TaxCalculator() {
         )}
       </div>
       <p className='text-center text-xs text-gray-500 pt-10'>
-        Created by <a href='https://t.me/samneng_bot/' target='_blank' rel='noopener noreferrer' className='text-blue-500 underline'><i>Samneng</i></a>
+        <a href='https://t.me/samneng_bot/' target='_blank' rel='noopener noreferrer' className='text-blue-500 underline'><i>Samneng</i></a>, Made with ❤️
       </p>
     </div>
   );
