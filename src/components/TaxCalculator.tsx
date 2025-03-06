@@ -6,6 +6,7 @@ import { z } from 'zod';
 import { calculateTax } from '@/utils/taxCalculations';
 import { useState } from 'react';
 import InputField from './InputField';
+import { useLanguage } from './LanguageProvider';
 
 const calculatorSchema = z.object({
   grossSalary: z.number().min(0, 'Gross Salary must be a positive number'),
@@ -19,6 +20,7 @@ type CalculatorInputs = z.infer<typeof calculatorSchema>;
 
 export default function TaxCalculator() {
   const [result, setResult] = useState<Array<number> | null>(null);
+  const { t } = useLanguage();
 
   const {
     register,
@@ -45,12 +47,12 @@ export default function TaxCalculator() {
 
   return (
     <div>
-      <div className="max-w-2xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden">
+      <div className="max-w-2xl mx-auto bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden">
         <div className="bg-gradient-to-r from-blue-600 to-blue-700 px-8 py-6">
-          <h2 className="text-2xl font-bold text-white">Tax Calculator</h2>
-          <p className="text-white mt-2">Calculate your after-tax salary with NSSF deductions</p>
-          <p className="text-blue-100 text-xs italic">This application are following
-            <a href="https://www.tax.gov.kh/u6rhf7ogbi6/gdtstream/fb78dfde-8342-4e3c-80e0-84ef81919c70" className="hover:text-blue-300" target='_blank' rel='noopener noreferrer'> GDT PRAKAS 575</a> &
+          <h2 className="text-2xl font-bold text-white">{t('title')}</h2>
+          <p className="text-white mt-2">{t('subtitle')}</p>
+          <p className="text-blue-100 text-xs italic">{ t('note') }
+            <a href="https://www.tax.gov.kh/u6rhf7ogbi6/gdtstream/fb78dfde-8342-4e3c-80e0-84ef81919c70" className="hover:text-blue-300" target='_blank' rel='noopener noreferrer'> { t('prakas') }</a> &
             <a className="hover:text-blue-300" target='_blank' rel='noopener noreferrer' href="https://www.nssf.gov.kh/%e1%9e%95%e1%9f%92%e1%9e%93%e1%9f%82%e1%9e%80%e1%9e%a0%e1%9e%b6%e1%9e%93%e1%9e%b7%e1%9e%97%e1%9f%90%e1%9e%99%e1%9e%80%e1%9e%b6%e1%9e%9a%e1%9e%84%e1%9e%b6%e1%9e%9a/%e1%9e%80%e1%9e%b6%e1%9e%9a%e1%9e%94%e1%9e%84%e1%9f%8b%e1%9e%97%e1%9e%b6%e1%9e%82%e1%9e%91%e1%9e%b6%e1%9e%93/"> NSSF</a>
           </p>
         </div>
@@ -58,7 +60,7 @@ export default function TaxCalculator() {
         <form onSubmit={handleSubmit(onSubmit)} className="p-3 md:p-8 space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <InputField
-              label="Gross Salary (USD $)"
+              label={t('grossSalary')}
               type="number"
               step="0.01"
               register={register('grossSalary', { valueAsNumber: true })}
@@ -66,7 +68,7 @@ export default function TaxCalculator() {
             />
 
             <InputField
-              label="Additional allowance (USD $)"
+              label={t('otherIncome')}
               type="number"
               step="0.01"
               register={register('otherIncome', { valueAsNumber: true })}
@@ -76,17 +78,17 @@ export default function TaxCalculator() {
           </div>
           <div className="grid grid-cols-1 gap-4">
             <InputField
-              label="Number of Dependants"
+              label={t('dependants')}
               type="number"
               register={register('dependants', { valueAsNumber: true })}
               error={errors.dependants?.message}
-              tooltip="Number of people who rely on your income for financial support. (Ex: Your wife and your child)"
+              tooltip={t('dependantsTooltip')}
             />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <InputField
-              label="NBC Rate (KHR ៛)"
+              label={t('exchangeRate')}
               type="number"
               step="0.01"
               register={register('exchangeRate', { valueAsNumber: true })}
@@ -95,12 +97,12 @@ export default function TaxCalculator() {
             />
 
             <InputField
-              label="NSSF Rate  (KHR ៛)"
+              label={t('nffsRate')}
               type="number"
               step="0.01"
               register={register('nssfRate', { valueAsNumber: true })}
               error={errors.nssfRate?.message}
-              detail={<span dangerouslySetInnerHTML={{ __html: "Check for <a class='text-blue-600 underline' href='https://www.nssf.gov.kh/exchange-rate/' target='_blank' rel='noopener noreferrer'>NSSF Exchange Rate</a>" }} />}
+              detail={<span dangerouslySetInnerHTML={{ __html: `Check for <a class='text-blue-600 underline' href='https://www.nssf.gov.kh/exchange-rate/' target='_blank' rel='noopener noreferrer'>NSSF Exchange Rate</a>` }} />}
             />
           </div>
 
@@ -108,29 +110,29 @@ export default function TaxCalculator() {
             type="submit"
             className="w-full bg-blue-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-blue-700 transition-colors duration-200 shadow-md hover:shadow-lg"
           >
-            Calculate Tax
+            {t('calculate')}
           </button>
         </form>
 
         {result !== null && (
-          <div className="border-t border-gray-100 bg-gray-50 p-8">
+          <div className="border-t border-gray-100 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 p-8">
             <div className="text-center">
-              <h3 className="text-lg font-medium text-gray-900">Calculation Result</h3>
-              <p className="mt-4 text-sm text-gray-500">
-                Income Tax: <span className='font-bold text-gray-900'>${result[0].toFixed(2)}</span>
+              <h3 className="text-lg font-medium text-gray-900 dark:text-gray-200">{t('result')}</h3>
+              <p className="mt-4 text-sm text-gray-500 dark:text-gray-300">
+                {t('incomeTax')}: <span className='font-bold text-gray-900 dark:text-gray-100'>${result[0].toFixed(2)}</span>
               </p>
-              <p className="text-sm text-gray-500">
-                NSSF Deduction: <span className='font-bold text-gray-900'>${result[1].toFixed(2)}</span>
+              <p className="text-sm text-gray-500 dark:text-gray-300">
+                {t('nssfDeduce')}: <span className='font-bold text-gray-900 dark:text-gray-100'>${result[1].toFixed(2)}</span>
               </p>
               <p className="mt-4 text-3xl font-bold text-blue-600">
                 ${result[2].toFixed(2)}
               </p>
-              <p className="mt-1 text-sm text-gray-500">Your Take Home Salary</p>
+              <p className="mt-1 text-sm text-gray-500 dark:text-gray-100">{t('afterTax')}</p>
             </div>
           </div>
         )}
       </div>
-      <p className='text-center text-xs text-gray-500 pt-10'>
+      <p className='text-center text-xs text-gray-500 dark:text-gray-400 pt-10'>
         <a href='https://t.me/samneng_bot/' target='_blank' rel='noopener noreferrer' className='text-blue-500 underline'><i>Samneng</i></a>, Made with ❤️
       </p>
     </div>

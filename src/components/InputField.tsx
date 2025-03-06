@@ -14,12 +14,12 @@ interface InputFieldProps {
 export default function InputField({ label, type, register, error, step, detail, tooltip }: InputFieldProps) {
   return (
     <div>
-      <label className="block text-sm font-medium text-gray-700">
+      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
         {label}
         {tooltip && <Tooltip text={tooltip} />}
       </label>
       {detail && (
-      <p className="text-sm text-gray-500">{detail}</p>
+      <p className="text-sm text-gray-500 dark:text-gray-400">{detail}</p>
       )}
       <input
         type={type}
