@@ -1,5 +1,10 @@
 import './globals.css'
 import type { Metadata } from 'next'
+import { ThemeProvider } from '@/components/ThemeProvider'
+import { LanguageProvider } from '@/components/LanguageProvider'
+import { Kantumruy_Pro } from "next/font/google"
+
+const kantumruyPro = Kantumruy_Pro({ subsets: ["khmer"], fallback: ['san-serif'] })
 
 export const metadata: Metadata = {
   title: 'Salary Tax Calculator',
@@ -23,8 +28,14 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className="h-full">
-      <body className="h-full">{children}</body>
+    <html lang="en" className="h-full" suppressHydrationWarning>
+      <body className={kantumruyPro.className}>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <LanguageProvider>
+            {children}
+          </LanguageProvider>
+        </ThemeProvider>
+      </body>
     </html>
   )
 }
