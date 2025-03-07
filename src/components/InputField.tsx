@@ -9,9 +9,10 @@ interface InputFieldProps {
   step?: string;
   detail?: ReactNode;
   tooltip?: string;
+  disabled?: boolean
 }
 
-export default function InputField({ label, type, register, error, step, detail, tooltip }: InputFieldProps) {
+export default function InputField({ label, type, register, error, step, detail, tooltip, disabled }: InputFieldProps) {
   return (
     <div>
       <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
@@ -25,6 +26,7 @@ export default function InputField({ label, type, register, error, step, detail,
         type={type}
         step={step}
         {...register}
+        disabled={disabled}
         className="w-full px-4 py-2 mt-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
       />
       {error && (

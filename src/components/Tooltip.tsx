@@ -19,7 +19,7 @@ export default function Tooltip({ text }: TooltipProps) {
       </button>
       {isVisible && (
         <div className="absolute z-10 w-48 px-2 py-1 text-sm text-white bg-gray-900 dark:bg-gray-700 rounded-md shadow-lg -right-24 top-full">
-          <div className="relative">
+          <div className="relative font-normal">
             {text}
           </div>
         </div>
