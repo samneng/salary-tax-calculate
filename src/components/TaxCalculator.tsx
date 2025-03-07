@@ -7,25 +7,35 @@ import { calculateTax } from '@/utils/taxCalculations';
 import { useState } from 'react';
 import InputField from './InputField';
 import { useLanguage } from './LanguageProvider';
+import { CurrencyToggle } from './CurrencyToggle';
 
 const calculatorSchema = z.object({
   grossSalary: z.number().min(0, 'Gross Salary must be a positive number'),
   otherIncome: z.number().min(0, 'Additional allowance must be a positive number'),
   dependants: z.number().min(0, 'Number of dependants must be non-negative'),
   exchangeRate: z.number().positive('NBC rate must be a positive number'),
-  nssfRate: z.number().positive('NSSF rate must be a positive number').optional(),
+  nssfRate: z.preprocess(
+    (val) => {
+      if (val === '' || val === null || val === undefined) return null;
+      const parsed = Number(val);
+      return isNaN(parsed) ? null : parsed;
+    },
+    z.number().positive('NSSF rate must be a positive number').nullable()
+  ),
 });
 
 type CalculatorInputs = z.infer<typeof calculatorSchema>;
 
 export default function TaxCalculator() {
   const [result, setResult] = useState<Array<number> | null>(null);
+  const [currency, setCurrency] = useState<string>('USD');
   const { t } = useLanguage();
 
   const {
     register,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm<CalculatorInputs>({
     resolver: zodResolver(calculatorSchema),
     defaultValues: {
@@ -33,7 +43,7 @@ export default function TaxCalculator() {
       otherIncome: 0,
       dependants: 0,
       exchangeRate: 4000,
-      nssfRate: 4000,
+      nssfRate: null,
     },
   });
 
@@ -41,8 +51,23 @@ export default function TaxCalculator() {
     const taxResults = calculateTax({
       ...data,
       nssfRate: data.nssfRate ?? 0,
+      currency: currency,
     });
     setResult(taxResults); // Assuming you want the first result
+  };
+
+  const handleCurrencyChange = (newCurrency: string) => {
+    setCurrency(newCurrency);
+    setResult(null);
+    reset({
+      ...calculatorSchema.parse({
+        grossSalary: 0,
+        otherIncome: 0,
+        dependants: 0,
+        exchangeRate: 4000,
+        nssfRate: null,
+      }),
+    });
   };
 
   return (
@@ -57,10 +82,16 @@ export default function TaxCalculator() {
           </p>
         </div>
 
+        <div className='p-3 pb-0 md:p-8 md:pb-0 space-y-6 flex justify-center'>
+          <CurrencyToggle
+            currency={currency}
+            setCurrency={handleCurrencyChange}
+          />
+        </div>
         <form onSubmit={handleSubmit(onSubmit)} className="p-3 md:p-8 space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <InputField
-              label={t('grossSalary')}
+              label={`${t('grossSalary')} (${currency})`}
               type="number"
               step="0.01"
               register={register('grossSalary', { valueAsNumber: true })}
@@ -68,12 +99,12 @@ export default function TaxCalculator() {
             />
 
             <InputField
-              label={t('otherIncome')}
+              label={`${t('otherIncome')} (${currency})`}
               type="number"
               step="0.01"
               register={register('otherIncome', { valueAsNumber: true })}
               error={errors.otherIncome?.message}
-              tooltip="Any additional income you receive apart from your salary. (Ex: Bonus, OT, Commission, etc.)"
+              tooltip={t('otherIncomesTooltip')}
             />
           </div>
           <div className="grid grid-cols-1 gap-4">
@@ -90,19 +121,21 @@ export default function TaxCalculator() {
             <InputField
               label={t('exchangeRate')}
               type="number"
-              step="0.01"
+              step="1"
               register={register('exchangeRate', { valueAsNumber: true })}
               error={errors.exchangeRate?.message}
               detail={<span dangerouslySetInnerHTML={{ __html: "Check for <a class='text-blue-600 underline' href='https://www.nbc.gov.kh/english/economic_research/exchange_rate.php' target='_blank' rel='noopener noreferrer'>NBC Exchange Rate</a>" }} />}
+              disabled={currency === 'RIEL'}
             />
 
             <InputField
               label={t('nffsRate')}
               type="number"
-              step="0.01"
+              step="1"
               register={register('nssfRate', { valueAsNumber: true })}
               error={errors.nssfRate?.message}
               detail={<span dangerouslySetInnerHTML={{ __html: `Check for <a class='text-blue-600 underline' href='https://www.nssf.gov.kh/exchange-rate/' target='_blank' rel='noopener noreferrer'>NSSF Exchange Rate</a>` }} />}
+              disabled={currency === 'RIEL'}
             />
           </div>
 
@@ -119,13 +152,16 @@ export default function TaxCalculator() {
             <div className="text-center">
               <h3 className="text-lg font-medium text-gray-900 dark:text-gray-200">{t('result')}</h3>
               <p className="mt-4 text-sm text-gray-500 dark:text-gray-300">
-                {t('incomeTax')}: <span className='font-bold text-gray-900 dark:text-gray-100'>${result[0].toFixed(2)}</span>
+                {t('taxRate')}: <span className='font-bold text-gray-900 dark:text-gray-100'>{result[3]}%</span>
+              </p>
+              <p className="mt-4 text-sm text-gray-500 dark:text-gray-300">
+                {t('incomeTax')}: <span className='font-bold text-gray-900 dark:text-gray-100'>{currency === 'USD' ? '$' : '៛'}{result[0].toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')}</span>
               </p>
               <p className="text-sm text-gray-500 dark:text-gray-300">
-                {t('nssfDeduce')}: <span className='font-bold text-gray-900 dark:text-gray-100'>${result[1].toFixed(2)}</span>
+                {t('nssfDeduce')}: <span className='font-bold text-gray-900 dark:text-gray-100'>{currency === 'USD' ? '$' : '៛'}{result[1].toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')}</span>
               </p>
-              <p className="mt-4 text-3xl font-bold text-blue-600">
-                ${result[2].toFixed(2)}
+              <p className="mt-4 text-3xl font-bold text-blue-600 dark:text-blue-400">
+                {currency === 'USD' ? '$' : '៛'}{result[2].toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')}
               </p>
               <p className="mt-1 text-sm text-gray-500 dark:text-gray-100">{t('afterTax')}</p>
             </div>
