@@ -7,6 +7,7 @@ import { Kantumruy_Pro } from "next/font/google"
 const kantumruyPro = Kantumruy_Pro({ subsets: ["khmer"], fallback: ['san-serif'] })
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://salary-tax-calculate.vercel.app'),
   title: 'Salary Tax Calculator',
   description: 'Calculate your salary after tax',
   icons: '/img/tax-calculate.png',

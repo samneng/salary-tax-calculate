@@ -1,10 +1,11 @@
 'use client';
 import { ReactNode } from 'react';
+import { UseFormRegisterReturn } from 'react-hook-form';
 import Tooltip from './Tooltip';
 interface InputFieldProps {
   label: string;
   type: string;
-  register: any;
+  register: UseFormRegisterReturn;
   error?: string;
   step?: string;
   detail?: ReactNode;

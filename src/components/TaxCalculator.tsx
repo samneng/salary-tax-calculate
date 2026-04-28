@@ -124,7 +124,7 @@ export default function TaxCalculator() {
               step="1"
               register={register('exchangeRate', { valueAsNumber: true })}
               error={errors.exchangeRate?.message}
-              detail={<span dangerouslySetInnerHTML={{ __html: "Check for <a class='text-blue-600 underline' href='https://www.nbc.gov.kh/english/economic_research/exchange_rate.php' target='_blank' rel='noopener noreferrer'>NBC Exchange Rate</a>" }} />}
+              detail={<span>Check for <a className='text-blue-600 underline' href='https://www.nbc.gov.kh/english/economic_research/exchange_rate.php' target='_blank' rel='noopener noreferrer'>NBC Exchange Rate</a></span>}
               disabled={currency === 'RIEL'}
             />
 
@@ -134,7 +134,7 @@ export default function TaxCalculator() {
               step="1"
               register={register('nssfRate', { valueAsNumber: true })}
               error={errors.nssfRate?.message}
-              detail={<span dangerouslySetInnerHTML={{ __html: `Check for <a class='text-blue-600 underline' href='https://www.nssf.gov.kh/exchange-rate/' target='_blank' rel='noopener noreferrer'>NSSF Exchange Rate</a>` }} />}
+              detail={<span>Check for <a className='text-blue-600 underline' href='https://www.nssf.gov.kh/exchange-rate/' target='_blank' rel='noopener noreferrer'>NSSF Exchange Rate</a></span>}
               disabled={currency === 'RIEL'}
             />
           </div>
